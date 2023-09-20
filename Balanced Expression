@@ -1,0 +1,70 @@
+You are given a string exp representing an expression. Assume that the expression is balanced i.e. the opening and closing brackets match with each other.
+
+But, some pair of brackets maybe extra/needless. You are required to find out if there are extra brackets or not.
+
+Input Format
+First line contains the string exp
+
+Output Format
+Complete the function ExtraBrackets() and return true or false according to the question.
+
+Example 1
+Input
+
+((a + b) + (c + d))
+Output
+
+false
+Example 2
+Input
+
+(a + b) + ((c + d))
+Output
+
+true
+Constraints
+1 <= exp.size() <= 10000
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+import java.io.*;
+import java.util.*;
+
+class Solution{
+    boolean expBalanced(String str){
+        // write code here
+		Stack<Character> st = new Stack<>();
+		int n = str.length();
+		for(int i=0;i<n;i++)
+			{
+				char ch = str.charAt(i);
+				if(ch == '(' || ch == '[' || ch == '{')
+				{
+					st.push(ch);
+				}
+				else if(ch == ')' || ch == ']' || ch == '}')
+				{
+					if(st.isEmpty() || !Match(st.pop(),ch))
+					{
+						return false;
+					}
+				}
+			}
+		return st.isEmpty();
+    }
+boolean Match(char c1, char c2)
+	{
+		return (c1=='(' && c2 == ')')||
+			(c1 =='[' && c2 ==']')||
+			(c1=='{' && c2=='}');
+	}
+}
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String str = br.readLine();
+        Solution Obj = new Solution();
+        System.out.println(Obj.expBalanced(str));
+    }
+}
