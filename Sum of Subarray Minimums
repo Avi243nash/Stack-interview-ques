@@ -1,0 +1,113 @@
+Given an array of integers arr, find the sum of the minimums of all contiguous subarrays of the array. Since the answer may be large, print the answer modulo 10^9 + 7.
+
+Your task is to complete the function minSubarraySum which receives arr and size of array as parameters and returns the sum of the minimums of all contiguous subarrays of the array
+
+Input Format
+The first line contains a single integer n(size of the array).
+
+The second line contains n space integers that denote the elements of the array.
+
+Output Format
+Print the sum of minimum of all subarrays.
+
+Example 1
+Input
+
+4
+3 1 2 4
+Output
+
+17
+Explanation
+
+Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].
+Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.
+Sum is 17.
+
+Example 2
+Input
+
+3
+1 2 3
+Output
+
+10
+Explanation
+
+Subarrays are [1], [2], [3], [1,2], [2,3], [1,2,3].
+Minimums are 1, 2, 3, 1, 2, 1.
+Sum is 10.
+
+Constraints
+1 <= arr.length <= 3 * 10^4
+1 <= arr[i] <= 3 * 10^4
+-----------------------------------------
+----------------------------------------
+import java.io.*;
+import java.util.*;
+
+class Solution{
+	public long minSubarraySum(int n, int a[]){
+		// write code here
+		// next smaller element index on the right side
+		int nextsmallright[] = new int[n];
+		Stack<Integer> st = new Stack<>();
+		for(int i=0;i<n;i++)
+			{   
+				int current = a[i];
+				while(st.size()>0 && current<=a[st.peek()])
+					{
+						nextsmallright[st.peek()] = i;
+						st.pop();
+					}
+				st.push(i);
+			}
+		while(st.size()>0)
+			{
+				nextsmallright[st.peek()] = n;
+				st.pop();
+			}
+		int nextsmallleft[] = new int[n];
+		for(int i = n-1;i>=0;i--)
+			{
+				int current = a[i];
+				while(st.size()>0 && current<=a[st.peek()])
+					{
+						nextsmallleft[st.peek()] = i;
+						st.pop();
+					}
+				st.push(i);
+			}
+		while(st.size()>0)
+			{
+				nextsmallleft[st.peek()] = -1;
+				st.pop();
+			}
+		// step3 - how to find in how many subarrays cur element is minimum
+		long m = 1000000007;
+		long totalsum = 0;
+		for(int i=0;i<n;i++)
+			{
+				long numstartingpoint = i-nextsmallleft[i];
+				long numendingpoints = nextsmallright[i] - i;
+				long numberofsubarays = (numstartingpoint%m * numendingpoints%m)%m;
+				long sum = (a[i]%m * numberofsubarays%m)%m;
+				totalsum = (totalsum%m + sum%m)%m;
+			}
+		return totalsum;
+		
+	}
+}
+
+public class Main {
+    public static void main(String args[]) {
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt();
+        int a[] = new int[n];
+        for(int i = 0; i < n; i++){
+            a[i] = input.nextInt();
+        }
+		Solution Obj = new Solution();
+        System.out.println(Obj.minSubarraySum(n,a));
+    }
+}
